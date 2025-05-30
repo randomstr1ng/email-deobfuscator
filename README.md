@@ -1,5 +1,7 @@
 # E-Mail deobfuscator für die Webseite der Gemeinde Neuhausen-Enzkreis
 
+The app is available at [https://email-deobfuscator.str1ng.org/](https://email-deobfuscator.str1ng.org/).
+
 A Flask web application to extract and decrypt obfuscated e-mail addresses from pages on https://www.neuhausen-enzkreis.de.
 
 ## Features
@@ -56,10 +58,10 @@ A Flask web application to extract and decrypt obfuscated e-mail addresses from 
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 (GPL-3.0).  
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
 See the [LICENSE](LICENSE) file for details.
 
 ## Attribution
 
-If you use or modify this project, you **must** provide attribution to the original author as required by the GPL-3.0 license.  
+If you use or modify this project, you **must** provide attribution to the original author as required by the GPL-3.0 license.
 All copies and substantial portions of the project must retain the copyright notice and this permission notice.
