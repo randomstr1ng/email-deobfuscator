@@ -53,3 +53,13 @@ A Flask web application to extract and decrypt obfuscated e-mail addresses from 
 - `app/static/` - Static files (e.g., favicon).
 - `Dockerfile` - Container build instructions.
 - `.github/workflows/` - GitHub Actions workflow for Docker/GHCR.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).  
+See the [LICENSE](LICENSE) file for details.
+
+## Attribution
+
+If you use or modify this project, you **must** provide attribution to the original author as required by the GPL-3.0 license.  
+All copies and substantial portions of the project must retain the copyright notice and this permission notice.
