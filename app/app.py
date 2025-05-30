@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import requests
+import requests, os
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-app.secret_key = "replace_this_with_a_random_secret"
+app.secret_key = "replace_this_with_a_random_secret_as_this_is_not_used_anywhere_I_don't_give_a_fuck"
 
 def decrypt_charcode(char_code, start, end, offset):
     char_count = end - start + 1
@@ -68,4 +68,5 @@ def index():
     return render_template("index.html", results=results, url=url)
 
 if __name__ == "__main__":
-    app.run(debug=False, port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port, debug=False)
