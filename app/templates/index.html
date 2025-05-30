@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Email Deobfuscator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <!-- Simple CSS Reset and Modern UI -->
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: "Segoe UI", Arial, sans-serif;
+                background: #f8fafc;
+                color: #222;
+            }
+            .container {
+                max-width: 600px;
+                margin: 2rem auto;
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+                padding: 2rem 1.5rem;
+            }
+            h1 {
+                text-align: center;
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+                color: #2563eb;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            input[type="url"] {
+                padding: 0.75rem 1rem;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border 0.2s;
+            }
+            input[type="url"]:focus {
+                border-color: #2563eb;
+                outline: none;
+            }
+            button {
+                background: #2563eb;
+                color: #fff;
+                border: none;
+                padding: 0.75rem 1rem;
+                border-radius: 6px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+            button:hover,
+            button:focus {
+                background: #1d4ed8;
+            }
+            .alert {
+                padding: 0.75rem 1rem;
+                border-radius: 6px;
+                margin-bottom: 1rem;
+                font-size: 1rem;
+            }
+            .alert-danger {
+                background: #fee2e2;
+                color: #b91c1c;
+            }
+            .alert-info {
+                background: #e0e7ff;
+                color: #3730a3;
+            }
+            .results {
+                margin-top: 2rem;
+            }
+            .result-card {
+                background: #f1f5f9;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
+            }
+            .result-label {
+                font-weight: 600;
+                color: #475569;
+            }
+            .decoded {
+                font-family: monospace;
+                color: #059669;
+                word-break: break-all;
+            }
+            .copy-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.2rem 0.4rem;
+                margin-left: 0.5rem;
+                border-radius: 4px;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+            }
+            .copy-btn:hover,
+            .copy-btn:focus {
+                background: #dbeafe;
+            }
+            .copy-icon {
+                width: 1.2em;
+                height: 1.2em;
+                fill: #2563eb;
+            }
+            .copied-msg {
+                color: #059669;
+                font-size: 0.95em;
+                margin-left: 0.5em;
+                font-weight: 500;
+                display: none;
+            }
+            @media (max-width: 600px) {
+                .container {
+                    padding: 1rem 0.5rem;
+                }
+                h1 {
+                    font-size: 1.3rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Email Deobfuscator für die Webseite der Gemeinde Neuhausen</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %} {%
+            if messages %} {% for category, message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %} {% endif %} {% endwith %}
+            <form method="post" autocomplete="off">
+                <label for="url" class="result-label"
+                    >Enter a URL to scan for obfuscated emails:</label
+                >
+                <input
+                    type="url"
+                    id="url"
+                    name="url"
+                    placeholder="https://example.com/page"
+                    value="{{ url|e }}"
+                    required
+                />
+                <button type="submit">Submit</button>
+            </form>
+            {% if results %}
+            <div class="results">
+                <h2
+                    style="
+                        font-size: 1.2rem;
+                        color: #2563eb;
+                        margin-bottom: 1rem;
+                    "
+                >
+                    E-Mail Addresses
+                </h2>
+                {% for item in results %}
+                <div class="result-card">
+                    <div>
+                        <span class="result-label">E-Mail Address:</span>
+                        <span class="decoded" id="decoded-{{ loop.index }}"
+                            >{{ item.decoded }}</span
+                        >
+                    </div>
+                    <button
+                        class="copy-btn"
+                        type="button"
+                        onclick="copyToClipboard('decoded-{{ loop.index }}', this)"
+                    >
+                        <svg class="copy-icon" viewBox="0 0 20 20">
+                            <rect x="7" y="2" width="9" height="14" rx="2" />
+                            <rect
+                                x="2"
+                                y="6"
+                                width="9"
+                                height="12"
+                                rx="2"
+                                fill="none"
+                                stroke="#2563eb"
+                                stroke-width="1.5"
+                            />
+                        </svg>
+                    </button>
+                    <span class="copied-msg">Copied!</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <script>
+            function copyToClipboard(elementId, btn) {
+                const text = document.getElementById(elementId).innerText;
+                navigator.clipboard.writeText(text).then(function () {
+                    // Show "Copied!" message
+                    const msg = btn.nextElementSibling;
+                    msg.style.display = "inline";
+                    setTimeout(() => {
+                        msg.style.display = "none";
+                    }, 1200);
+                });
+            }
+        </script>
+    </body>
+</html>
